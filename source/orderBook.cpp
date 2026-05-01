@@ -8,7 +8,7 @@ OrderBook::OrderBook() {}
 OrderBook::~OrderBook() {}
 
 void OrderBook::Trade(Side currentSide, Order &incomingOrder, PnlEngine &pnlEngine)
-{
+{ 
     if (currentSide == Side::BUY)
     {
         while (!OrderBook::sellBook.empty() && incomingOrder.getQuantity() > 0)
@@ -24,15 +24,16 @@ void OrderBook::Trade(Side currentSide, Order &incomingOrder, PnlEngine &pnlEngi
 
             int tradeQty = std::min(incomingOrder.getQuantity(), sellOrder.getQuantity());
 
+            
+
             // Update quantities
             incomingOrder.setQuantity(incomingOrder.getQuantity() - tradeQty);
             sellOrder.setQuantity(sellOrder.getQuantity() - tradeQty);
 
             // PnL call
-            pnlEngine.FILL(Side::BUY,  bestSellPrice, incomingOrder.getQuantity());
+            pnlEngine.FILL(Side::BUY, bestSellPrice, tradeQty);
 
-            //pnlEngine.FILL(Side::SELL,  bestSellPrice, tradeQty);
-
+       
             // Remove sell order if fully filled
             if (sellOrder.getQuantity() == 0)
             {
@@ -48,6 +49,7 @@ void OrderBook::Trade(Side currentSide, Order &incomingOrder, PnlEngine &pnlEngi
             // Add remaining buy order to book
             buyBook[incomingOrder.getPrice()].push_back(incomingOrder);
             orderIndex[incomingOrder.getId()] = --buyBook[incomingOrder.getPrice()].end();
+        
         }
     }
     else
@@ -65,23 +67,20 @@ void OrderBook::Trade(Side currentSide, Order &incomingOrder, PnlEngine &pnlEngi
             Order &buyOrder = buyList.front();
 
             int tradeQty = std::min(incomingOrder.getQuantity(), buyOrder.getQuantity());
-
             // Update quantities
             incomingOrder.setQuantity(incomingOrder.getQuantity() - tradeQty);
             buyOrder.setQuantity(buyOrder.getQuantity() - tradeQty);
 
             // PnL call
-            pnlEngine.FILL(Side::SELL,  bestBuyPrice, incomingOrder.getQuantity());
-            
+           
+            pnlEngine.FILL(Side::SELL, bestBuyPrice, tradeQty);
 
             // Remove buy order if fully filled
             if (buyOrder.getQuantity() == 0)
-            {
-               
+            { 
                 auto id = buyOrder.getId();
                 buyList.pop_front();
-                orderIndex.erase(id);
-                
+                orderIndex.erase(id);   
             }
         }
 
