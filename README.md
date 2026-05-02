@@ -1,4 +1,4 @@
-# 📈 C++ In-Memory Trading Engine (Order Book + PnL System)
+#  C++ In-Memory Trading Engine (Order Book + PnL System)
 
 A lightweight **limit order book + position/PnL engine** implemented in C++17.  
 Designed for learning **low-level trading system design, data structures, and execution logic**.
