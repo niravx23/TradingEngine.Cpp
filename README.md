@@ -5,15 +5,15 @@ Designed for learning **low-level trading system design, data structures, and ex
 
 ---
 
-# 🚀 Features
+#  Features
 
-## 📦 Order Book Engine
+##  Order Book Engine
 - BUY / SELL limit orders
 - Price-time priority (FIFO per price level)
 - Partial fills supported
 - Fast order lookup using `unordered_map`
 
-## 🔁 Supported Commands
+##  Supported Commands
 - `NEW id side price qty`
 - `CANCEL id`
 - `MODIFY id newPrice newQty`
@@ -21,7 +21,7 @@ Designed for learning **low-level trading system design, data structures, and ex
 
 ---
 
-## 💰 PnL Engine
+##  PnL Engine
 Tracks trading performance:
 
 - `netQty` → current position (long/short)
@@ -35,9 +35,9 @@ Tracks trading performance:
 
 ---
 
-# 🧠 Core Design
+#  Core Design
 
-## 🏗 Order Book Structure
+##  Order Book Structure
 ```cpp
 map<double, list<Order>> buyBook;
 map<double, list<Order>> sellBook;
