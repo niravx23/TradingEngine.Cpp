@@ -10,17 +10,17 @@ PnlEngine::~PnlEngine() {}
 // BUY 100 10
 void PnlEngine::FILL(Side side, int price, int qty)
 {
-     int signedQty = (side == Side::BUY) ? qty : -qty;
+    int currentQty = (side == Side::BUY) ? qty : -qty;
 
     int oldQty = netQty;
-    int newQty = netQty + signedQty;
+    int newQty = netQty + currentQty;
 
     // SAME DIRECTION (add to position)
-    if (oldQty == 0 || (oldQty > 0 && signedQty > 0) || (oldQty < 0 && signedQty < 0))
+    if (oldQty == 0 || (oldQty > 0 && currentQty > 0) || (oldQty < 0 && currentQty < 0))
     {
         double totalCost =
             avgPrice * std::abs(oldQty) +
-            price * std::abs(signedQty);
+            price * std::abs(currentQty);
 
         netQty = newQty;
 
@@ -32,12 +32,17 @@ void PnlEngine::FILL(Side side, int price, int qty)
     else
     {
         // OPPOSITE DIRECTION (closing / flip)
-        int closingQty = std::min(std::abs(oldQty), std::abs(signedQty));
-
-        if (oldQty > 0)
+        int closingQty = std::min(std::abs(oldQty), std::abs(currentQty));
+        
+        if (currentQty < 0) {
+            // SELL is closing BUY position
             realizedPnL += closingQty * (price - avgPrice);
-        else
+        }
+        else {
+            // BUY is closing SHORT position
             realizedPnL += closingQty * (avgPrice - price);
+        }
+                
 
         netQty = newQty;
 
@@ -84,4 +89,34 @@ void PnlEngine::printPnl()
     std::cout << "Average Price: " << avgPrice << "\n";
     std::cout << "Realized PnL: " << realizedPnL << "\n";
     std::cout << "Unrealized PnL: " << unrealizedPnL << "\n";
+}
+
+ int PnlEngine::getNetQty() const
+{
+    return netQty;
+}
+
+double PnlEngine::getAvgPrice() const
+{
+    return avgPrice;
+}
+
+double PnlEngine::getRealizedPnL() const
+{
+    return realizedPnL;
+}
+
+double PnlEngine::getUnrealizedPnL() const
+{
+    return unrealizedPnL;
+}
+
+double PnlEngine::getMarketPrice() const
+{
+    return marketPrice;
+}
+
+void PnlEngine::setMarketPrice(double price)
+{
+    PRICE(price); // Reuse existing logic to update unrealized PnL
 }

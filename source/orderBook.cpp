@@ -31,7 +31,8 @@ void OrderBook::Trade(Side currentSide, Order &incomingOrder, PnlEngine &pnlEngi
             sellOrder.setQuantity(sellOrder.getQuantity() - tradeQty);
 
             // PnL call
-            pnlEngine.FILL(Side::BUY, bestSellPrice, tradeQty);
+            pnlEngine.FILL(Side::BUY, incomingOrder.getPrice(), tradeQty);
+            pnlEngine.FILL(Side::SELL, bestSellPrice, tradeQty);
 
        
             // Remove sell order if fully filled
@@ -72,8 +73,9 @@ void OrderBook::Trade(Side currentSide, Order &incomingOrder, PnlEngine &pnlEngi
             buyOrder.setQuantity(buyOrder.getQuantity() - tradeQty);
 
             // PnL call
-           
-            pnlEngine.FILL(Side::SELL, bestBuyPrice, tradeQty);
+
+            pnlEngine.FILL(Side::SELL, incomingOrder.getPrice(), tradeQty);
+            pnlEngine.FILL(Side::BUY, bestBuyPrice, tradeQty);
 
             // Remove buy order if fully filled
             if (buyOrder.getQuantity() == 0)

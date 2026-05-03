@@ -16,4 +16,14 @@ public:
     void printPnl();
     ~PnlEngine();
 
+    int getNetQty() const;
+    double getAvgPrice() const;
+    double getRealizedPnL() const;
+    double getUnrealizedPnL() const;
+    double getMarketPrice() const;
+
+    // Setters (rarely needed but added for tests/debug)
+    void setMarketPrice(double price);
+    
+
 };
